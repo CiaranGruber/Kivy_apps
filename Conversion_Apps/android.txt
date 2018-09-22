@@ -1,0 +1,3 @@
+title=Ciaran's Conversions and Calculations
+author=Ciaran Gruber
+orientation=portrait
