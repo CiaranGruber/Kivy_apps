@@ -1,0 +1,12 @@
+Baseline as Australian Dollar
+Name, Relative currency
+Australian Dollar,1
+Euro,0.6199
+Pound Sterling,0.5583
+US Dollar,0.7294
+Canadian Dollar,0.9434
+New Zealand Dollar,1.09
+Bitcoin,0.00011
+Singapore,1
+Chinese Yuan,4.98
+Japanese Yen,81.80

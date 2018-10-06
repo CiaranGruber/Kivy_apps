@@ -1,3 +1,0 @@
-title=Grade Checker
-author=Ciaran Gruber
-orientation=landscape

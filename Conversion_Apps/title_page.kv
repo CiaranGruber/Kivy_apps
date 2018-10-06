@@ -1,47 +1,275 @@
 BoxLayout:
     id: main_box
     BoxLayout:
-        orientation: 'vertical'
+        orientation: 'horizontal'
         BoxLayout:
             orientation: 'vertical'
             Button:
-                id: chooser
                 text: 'Uni Grade Checker'
-                on_press: app.choose_application()
+                on_release: grading_popup.open()
             Button:
-                text: 'Other Stuff'
+                text: 'Temperature Converter'
+                on_release: temperature_popup.open()
+            Button:
+                text: 'Currency Converter'
+                on_release: convert_currency_popup.open()
         Button:
-            size_hint_y: 0.2
+            size_hint_x: 0.3
             text: 'Quit'
-            on_release: app.stop()
-        Label:
-            id: output
-            size_hint_y: 0.2
-            text: ''
+            on_release: quit_application_popup.open()
     Popup:
-        id: grading_popup
-        title: 'Grade Checker'
-        size_hint: 0.7, 0.7
+        id: quit_application_popup
+        title: 'Do you actually wish to quit?'
+        size_hint: 0.7, 0.3
         on_parent:
             if self.parent == main_box: self.parent.remove_widget(self)
         BoxLayout:
-            #orientation: 'vertical'
+            orientation: 'horizontal'
+            Button:
+                text: 'No'
+                on_release: quit_application_popup.dismiss()
+            Button:
+                text: 'Yes'
+                on_release: get_running_app().stop()
+
+    Popup:
+        id: grading_popup
+        title: 'Grade Checker'
+        size_hint: 0.8, 0.8
+        on_parent:
+            if self.parent == main_box: self.parent.remove_widget(self)
+        BoxLayout:
             orientation: 'horizontal'
             BoxLayout:
                 orientation: 'vertical'
                 size_hint_x: 0.3
                 Button:
                     text: 'Clear'
-                    on_press: app.grade_clear_all()
+                    on_release: app.grade_clear_all()
                 Button:
                     text: 'Calculate Grade'
-                    on_press: app.grade_calculate_grade()
+                    on_release: app.grade_calculate_grade()
             BoxLayout:
                 orientation: 'vertical'
                 TextInput:
                     id: grade_input_grade
+                    multiline: False
                     text: ''
+                    hint_text: 'Enter your grade percentage (must be a number)'
                 Label:
                     id: grade_output_label
-                    text: 'Enter your grade'
+                    text: ''
                     color: (1, 1, 0, 1)
+    Popup:
+        id: temperature_popup
+        title: 'Temperature Converter'
+        size_hint: 0.8, 0.8
+        on_parent:
+            if self.parent == main_box: self.parent.remove_widget(self)
+        BoxLayout:
+            orientation: 'vertical'
+            BoxLayout:
+                orientation: 'horizontal'
+                Label:
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                    text: 'Celsius'
+                    size_hint_x: 0.2
+                TextInput:
+                    id: celsius_input
+                    multiline: False
+                    text: ''
+                    hint_text: 'Enter amount in Celsius'
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_x: 0.3
+                    Button:
+                        text: 'Up'
+                        on_release: app.change_celsius(1)
+                    Button:
+                        text: 'Down'
+                        on_release: app.change_celsius(-1)
+                Button:
+                    id: convert_celsius
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                    size_hint_x: 0.5
+                    text: 'Convert to Fahrenheit'
+                    on_release: app.convert_to_fahrenheit()
+            BoxLayout:
+                orientation: 'horizontal'
+                Label:
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                    text: 'Fahrenheit'
+                    size_hint_x: 0.2
+                TextInput:
+                    id: fahrenheit_input
+                    multiline: False
+                    text: ''
+                    hint_text: 'Enter amount in Fahrenheit'
+                BoxLayout:
+                    size_hint_x: 0.3
+                    orientation: 'vertical'
+                    Button:
+                        text: 'Up'
+                        on_release: app.change_fahrenheit(1)
+                    Button:
+                        text: 'Down'
+                        on_release: app.change_fahrenheit(-1)
+                Button:
+                    id: convert_fahrenheit
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                    size_hint_x: 0.5
+                    text: 'Convert to Celsius'
+                    on_release: app.convert_to_celsius()
+            Button:
+                text: 'Clear'
+                on_release: app.temperature_clear_all()
+    Popup:
+        id: convert_currency_popup
+        title: 'Currency Converter'
+        size_hint: 0.8, 0.8
+        on_parent:
+            if self.parent == main_box: self.parent.remove_widget(self)
+        BoxLayout:
+            orientation: 'vertical'
+            BoxLayout:
+                orientation: 'horizontal'
+                BoxLayout:
+                    orientation: 'vertical'
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y: 0.3
+                        Label:
+                            text: 'Home Currency'
+                        Spinner:
+                            text: app.home_currency
+                            values: app.currencies
+                            on_text: app.home_currency = self.text
+                    TextInput:
+                        id: home_currency_input
+                        multiline: False
+                        text: ''
+                        hint_text: 'Enter amount of money'
+                        on_text: app.convert_to_foreign_currency()
+                BoxLayout:
+                    orientation: 'vertical'
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y: 0.3
+                        Label:
+                            text: 'Foreign Currency'
+                        Spinner:
+                            text: app.foreign_currency
+                            values: app.currencies
+                            on_text: app.foreign_currency = self.text
+                    TextInput:
+                        id: foreign_currency_input
+                        multiline: False
+                        text: ''
+                        hint_text: 'Enter amount of money'
+                        on_text: app.convert_to_home_currency()
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: 0.7
+                Button:
+                    text: 'Add new currency'
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                    on_release: add_currency_popup.open()
+                Button:
+                    text: 'Calibrate home currency'
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                    on_release: app.calibrate_home_currency()
+                Button:
+                    text: 'Delete home currency'
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                    on_release: app.delete_home_currency()
+                Button:
+                    text: 'Reset currencies'
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                    on_release: reset_currency_popup.open()
+    Popup:
+        id: add_currency_popup
+        title: 'Add Currency'
+        size_hint: 0.8, 0.8
+        on_parent:
+            if self.parent == main_box: self.parent.remove_widget(self)
+        BoxLayout:
+            orientation: 'vertical'
+            BoxLayout:
+                orientation: 'horizontal'
+                BoxLayout:
+                    orientation: 'vertical'
+                    BoxLayout:
+                        orientation: 'vertical'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            Label:
+                                text: 'Home currency'
+                            TextInput:
+                                id: new_home_currency
+                                text: ''
+                                hint_text: 'Enter currency name'
+                        TextInput:
+                            id: new_home_currency_input
+                            text: ''
+                            hint_text: 'Add value comparatively to foreign currency'
+                    BoxLayout:
+                        orientation: 'vertical'
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            Label:
+                                text: 'Foreign currency'
+                            Spinner:
+                                text: app.new_foreign_currency
+                                values: app.currencies
+                                on_text: app.new_foreign_currency = self.text
+                        TextInput:
+                            id: new_foreign_currency_input
+                            text: ''
+                            hint_text: 'Add value comparatively to home currency'
+                Button:
+                    text: 'Add Currency'
+                    size_hint_x: 0.3
+                    on_release: app.add_currency()
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: 0.3
+                Label:
+                    id: currency_output_label
+                    text: ''
+                Button:
+                    text: 'Quit'
+                    on_release: add_currency_popup.dismiss()
+    Popup:
+        id: reset_currency_popup
+        title: 'Are you sure you wish to reset all currencies?'
+        size_hint: 0.7, 0.3
+        on_parent:
+            if self.parent == main_box: self.parent.remove_widget(self)
+        BoxLayout:
+            orientation: 'horizontal'
+            TextInput:  # TODO: Remove the need for this TextInput
+                size_hint: 0.00000001, 0.00000001
+            Button:
+                text: 'No'
+                on_release: reset_currency_popup.dismiss()
+            Button:
+                text: 'Yes'
+                on_release:
+                    app.reset_currencies()
+                    reset_currency_popup.dismiss()
