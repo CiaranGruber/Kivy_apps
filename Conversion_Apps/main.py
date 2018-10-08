@@ -40,13 +40,9 @@ class ConversionsAndCalculations(App):
                  self.currency_data)
         return True
 
-    def on_request_close(self, *args):
-        self.root.ids.quit_application_popup.open()
-
     def on_stop(self):
         save_csv('currency_data.txt', [['Baseline as Australian Dollar'], ['Name, Acronym, Relative currency']] +
                  self.currency_data)
-        return True
 
     def grade_clear_all(self):
         """
@@ -228,6 +224,7 @@ class ConversionsAndCalculations(App):
         if foreign_value_exists:
             try:
                 foreign_amount = float(self.root.ids.new_foreign_currency_input.text)
+                self.root.ids.new_foreign_currency_input.hint_text = 'Add value comparatively to home currency'
                 valid_foreign_amount = True
             except ValueError:
                 self.root.ids.new_foreign_currency_input.text = ''
@@ -240,6 +237,7 @@ class ConversionsAndCalculations(App):
         if home_value_exists:
             try:
                 home_amount = float(self.root.ids.new_home_currency_input.text)
+                self.root.ids.new_home_currency_input.hint_text = 'Add value comparatively to foreign currency'
                 valid_home_amount = True
             except ValueError:
                 self.root.ids.new_home_currency_input.text = ''
@@ -252,7 +250,13 @@ class ConversionsAndCalculations(App):
         valid_input = home_value_exists is foreign_value_exists is valid_foreign_amount is valid_home_amount is True
         if self.root.ids.new_home_currency.text == '':
             valid_input = False
-            self.root.ids.currency_output_label.text = 'Must enter new currency name'
+            self.root.ids.new_home_currency.hint_text = 'Must enter new currency name'
+        elif self.root.ids.new_home_currency.text in self.currencies:
+            valid_input = False
+            self.root.ids.new_home_currency.text = ''
+            self.root.ids.new_home_currency.hint_text = 'Currency already exists'
+        else:
+            self.root.ids.new_home_currency.hint_text = 'Enter currency name'
         if valid_input and home_amount > 0 and foreign_amount > 0:
             if self.new_foreign_currency != 'Select':
                 self.currency_data.append([self.root.ids.new_home_currency.text, str(
@@ -260,7 +264,6 @@ class ConversionsAndCalculations(App):
                     home_amount / foreign_amount)])
                 self.currencies.append(self.root.ids.new_home_currency.text)
                 self.root.ids.currency_output_label.text = 'Added currency: ' + self.root.ids.new_home_currency.text
-                self.root.ids.new_home_currency_input.text = str(self.currency_data)
             else:
                 self.root.ids.currency_output_label.text = 'Must have a foreign currency'
 

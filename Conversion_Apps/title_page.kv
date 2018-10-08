@@ -30,8 +30,7 @@ BoxLayout:
                 on_release: quit_application_popup.dismiss()
             Button:
                 text: 'Yes'
-                on_release: get_running_app().stop()
-
+                on_release: app.get_running_app().stop()
     Popup:
         id: grading_popup
         title: 'Grade Checker'
